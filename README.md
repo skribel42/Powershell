@@ -1,2 +1,2 @@
 # Powershell
-Powershell scripts to streamline operations
+Powershell scripts to streamline microsoft administration
