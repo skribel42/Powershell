@@ -27,26 +27,7 @@ function Get-BaseUrl
     $BaseUrl = "https://us5-cloud.acronis.com"
     switch($Region)
     {
-        "AU"
-        {
-            $BaseUrl = "https://au1-cloud.acronis.com"
-        }
-        "CA"
-        {
-            $BaseUrl = "https://ca01-cloud.acronis.com"
-        }
-        "EU"
-        {
-            $BaseUrl = "https://eu2-cloud.acronis.com"
-        }
-        "NZ"
-        {
-            $BaseUrl = "https://nz01-cloud.acronis.com"
-        }
-        "UK"
-        {
-            $BaseUrl = "https://eu-cloud.acronis.com"
-        }
+      
         "US"
         {
             $BaseUrl = "https://us15-cloud.acronis.com"
