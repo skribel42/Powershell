@@ -1,0 +1,83 @@
+//  you must input the registration token on the last line or define your variable $RegistrationToken in the code 
+
+function Get-AgentInstallerUrl
+{
+    $Instance = "us5-cloud.acronis.com"
+    switch($Region)
+    {
+    
+        "US"
+        {
+            $Instance = "https://us15-cloud.acronis.com"
+        }
+    }
+    
+    $response = Invoke-RestMethod -Uri "${instance}/bc/api/ams/links/list" -Method Get
+    foreach ($agent in $response.agents)
+    {
+        if ($agent.system -eq "exe" -and $agent.architecture -eq (32, 64)[[System.Environment]::Is64BitOperatingSystem])
+        {
+            return $agent.url
+        }
+    }
+}
+
+function Get-BaseUrl
+{
+    $BaseUrl = "https://us5-cloud.acronis.com"
+    switch($Region)
+    {
+        "AU"
+        {
+            $BaseUrl = "https://au1-cloud.acronis.com"
+        }
+        "CA"
+        {
+            $BaseUrl = "https://ca01-cloud.acronis.com"
+        }
+        "EU"
+        {
+            $BaseUrl = "https://eu2-cloud.acronis.com"
+        }
+        "NZ"
+        {
+            $BaseUrl = "https://nz01-cloud.acronis.com"
+        }
+        "UK"
+        {
+            $BaseUrl = "https://eu-cloud.acronis.com"
+        }
+        "US"
+        {
+            $BaseUrl = "https://us15-cloud.acronis.com"
+        }
+    }
+     return $BaseUrl
+}
+
+#Download URL For Acronis Agent
+$AgentURL = Get-AgentInstallerUrl
+
+#Acronis Cloud Instance
+$BaseUrl = Get-BaseUrl
+
+#Download Path For Acronis Agent Installer
+$DownloadFilePath = "$($ENV:TEMP)\AcronisInstaller.exe"
+
+#Delete Old Downloaded Acronis Agent Installer If Present
+Write-Host "Checking for existing Acronis agent installer..."
+if (Test-Path $DownloadFilePath)
+{
+    Write-Host "Previous Acronis agent installer detected..."
+    Remove-Item $DownloadFilePath
+    Write-Host "Previous Acronis agent installer deleted..."
+    Write-Host "Downloading new Acronis agent installer..."
+}
+else
+{
+  Write-Host "No previous Acronis agent installer detected, downloading..."
+}
+
+#Download And Run The Acronis Agent Installer Silently And Apply Registration Token
+(New-Object System.Net.WebClient).DownloadFile( $AgentURL, $DownloadFilePath)
+& "$($ENV:TEMP)\AcronisInstaller.exe" --quiet --registration by-token --reg-token $RegistrationToken --reg-address=$BaseUrl
